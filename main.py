@@ -2,10 +2,10 @@ import psycopg2  #postgreSQL package
 
 #connection to exist database Heroku service DO NOT DELETE
 connection = psycopg2.connect(
-    host = "ec2-44-198-236-169.compute-1.amazonaws.com",
-    user = "cuoytssinpguhx",
-    password = "7e126c52b4ac8af7ff202059092a10e277da2f4db9ca10029dfbd3639a6d651d",
-    database = "ddka0da87h182a",
+    host = "ec2-52-204-72-14.compute-1.amazonaws.com",
+    user = "itmjvhkoihtrjq",
+    password = "86ea3005e1ca022fe1e173bb9d8b6f801bfbfa87019f8d5664b080509ba83787",
+    database = "d2107g3nvhtdlr",
     port = 5432
 )
 connection.autocommit = True
