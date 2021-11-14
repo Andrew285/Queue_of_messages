@@ -1,7 +1,13 @@
 import psycopg2  #postgreSQL package
 
-#connection to localhost database
-connection = psycopg2.connect("dbname=postgres user=postgres host=localhost password=user port=5432")
+#connection to exist database Heroku service DO NOT DELETE
+connection = psycopg2.connect(
+    host = "ec2-44-198-236-169.compute-1.amazonaws.com",
+    user = "cuoytssinpguhx",
+    password = "7e126c52b4ac8af7ff202059092a10e277da2f4db9ca10029dfbd3639a6d651d",
+    database = "ddka0da87h182a",
+    port = 5432
+)
 connection.autocommit = True
 
 #creating table of management nodes
