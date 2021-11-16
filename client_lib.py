@@ -51,7 +51,9 @@ class Client:
         def extra():
             return self.R_API.read_message()
 
-
+@app.route('/get_mssg')
+def other_func():
+    return "Other get method"
 
 client = Client('127.0.0.1:8011')
 
