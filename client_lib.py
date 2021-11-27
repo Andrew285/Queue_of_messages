@@ -1,9 +1,6 @@
 import psycopg2  # postgreSQL package
 from data import DataAPI
 from managment import ManagmentAPI
-from flask import Flask, redirect, url_for, request
-
-app = Flask(__name__)
 
 
 class Client:
@@ -26,34 +23,15 @@ class Client:
         self.counter = (self.counter + 1) % 100
 
     # add message to the database
-    def push_message(self):
+    def push_message(self, msg):
         self._update_stats()
-
-        @app.route('/success/<name>')
-        def success(name):
-            return 'Message: %s added' % name
-
-        @app.route('/login', methods=['POST', 'GET'])
-        def login():
-            if request.method == 'POST':
-                text = request.form['nm']
-                self.W_API.write_message(text)
-                return redirect(url_for('success', name=text))
-            else:
-                text = request.args.get('nm')
-                return redirect(url_for('success', name=text))
+        self.W_API.write_message(msg)
 
     # get message from the database
     def get_message(self):
         self._update_stats()
+        return self.R_API.read_message()
 
-        @app.route('/get_mssg')
-        def extra():
-            return self.R_API.read_message()
-
-@app.route('/get_mssg')
-def other_func():
-    return "Other get method"
 
 client = Client('127.0.0.1:8011')
 
@@ -61,9 +39,5 @@ ip_address = "127.0.0.1"
 port = 8011
 text = "text_"
 
-
-# client.get_message()
-# client.push_message()
-app.run()
-
-
+print(client.get_message())
+client.push_message('msg')

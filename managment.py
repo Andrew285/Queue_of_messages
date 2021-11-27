@@ -54,6 +54,7 @@ class ManagmentAPI:
             d.update({f"{ip_list[j]}": count_list[j]})
 
         # return dictionary
+        print(d)
         return d
 
     # add new data node to the database
