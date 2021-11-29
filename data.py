@@ -3,12 +3,15 @@ import psycopg2
 from SQL import cursor
 import requests
 
-
-
 class DataAPI:
-    def __init__(self, node_address, fk_id):
-        self.node_address = node_address  # ip address/ For example {"127.0.0.1:8011"}
-        self.fk_data_id = fk_id  # reference data id for database (DO NOT DELETE!)
+    def __init__(self, node_address):
+        self.node_address = node_address  # ip address/ For example {"127.0.0.1:7011"}
+
+        #get address_id to manipulate a specific data_node
+        cursor.execute(
+            "SELECT d_address_id FROM data_nodes WHERE d_address_ip = %s", (node_address,)
+        )
+        self.fk_data_id = cursor.fetchone()[0]  # reference data id for database (DO NOT DELETE!)
 
     def __repr__(self):
         return f"{self.node_address}, fk_id={self.fk_data_id}"

@@ -18,10 +18,7 @@ class ManagmentAPI:
         else:
             print(f"There is such management node with this ip_address: {node_address}")
 
-        cursor.execute(
-            "SELECT m_address_id FROM management_nodes WHERE m_address_ip = %s", (node_address,)
-        )
-        # self.m_address_id = cursor.fetchone()[0]  # because it's tuple | it`s reference in the table
+        #Beacause of managements table contains only one management_node, m_address_id = 1
         self.m_address_id = 1  # because it's tuple | it`s reference in the table
 
     # get statistics of data nodes (how many messages are in the data node (queue))
@@ -31,7 +28,7 @@ class ManagmentAPI:
             "SELECT * FROM data_nodes"
         )
 
-        # writting ip addresses to the list (for comfortability)
+        # writing ip addresses to the list (for comfortability)
         id_list = []
         ip_list = []
         while True:
@@ -52,7 +49,7 @@ class ManagmentAPI:
             count_list.append(cursor.fetchone()[0])
             i += 1
 
-        # writting ip addresses and results of counting to the dictionary
+        # writing ip addresses and results of counting to the dictionary
         for j in range(len(id_list)):
             d.update({f"{ip_list[j]}": count_list[j]})
 
