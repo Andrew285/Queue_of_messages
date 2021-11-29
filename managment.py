@@ -21,36 +21,39 @@ class ManagmentAPI:
         cursor.execute(
             "SELECT m_address_id FROM management_nodes WHERE m_address_ip = %s", (node_address,)
         )
-        self.m_address_id = cursor.fetchone()[0]  # because it's tuple | it`s reference in the table
+        # self.m_address_id = cursor.fetchone()[0]  # because it's tuple | it`s reference in the table
+        self.m_address_id = 1  # because it's tuple | it`s reference in the table
 
     # get statistics of data nodes (how many messages are in the data node (queue))
     def get_stats(self):
         d = {}  # dictionary for comfortability
         cursor.execute(
-            "SELECT d_address_ip FROM data_nodes"
+            "SELECT * FROM data_nodes"
         )
 
         # writting ip addresses to the list (for comfortability)
+        id_list = []
         ip_list = []
         while True:
             row = cursor.fetchone()
             if row:
-                ip_list.append(row[0])
+                id_list.append(row[0])
+                ip_list.append(row[1])
             else:
                 break
 
         # count messages from each data node
         count_list = []
-        i = 1
-        while i <= len(ip_list):
+        i = 0
+        while i < len(id_list):
             cursor.execute(
-                "SELECT COUNT(message) FROM messages WHERE fk_d_address = %s", (i,)
+                "SELECT COUNT(message) FROM messages WHERE fk_d_address = %s", (id_list[i],)
             )
             count_list.append(cursor.fetchone()[0])
             i += 1
 
         # writting ip addresses and results of counting to the dictionary
-        for j in range(len(ip_list)):
+        for j in range(len(id_list)):
             d.update({f"{ip_list[j]}": count_list[j]})
 
         # return dictionary
@@ -70,11 +73,12 @@ class ManagmentAPI:
             cursor.execute(
                 "INSERT INTO data_nodes (d_address_ip, fk_m_address) VALUES (%s, %s)", (node_data_address, fk_id)
             )
+
         else:
             print(f"Node with ip: {node_data_address} is already in database")
 
     # removes data node from database
     def remove_node(self, node_data_address):
         cursor.execute(
-            "DROP FROM data_nodes WHERE d_address_ip = %s", (node_data_address,)
+            "DELETE FROM data_nodes WHERE d_address_ip = %s", (node_data_address,)
         )

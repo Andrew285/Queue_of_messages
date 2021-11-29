@@ -20,7 +20,7 @@ class Client:
             max_node = max(self.stats.keys(), key=(lambda x: self.stats[x]))
             self.W_API = DataAPI(min_node, self.M_API.m_address_id)  # data node with minimal amount of messages
             self.R_API = DataAPI(max_node, self.M_API.m_address_id)  # data node with maximum amount of messages
-        self.counter = (self.counter + 1) % 100
+        self.counter = (self.counter + 1) % 10
 
     # add message to the database
     def push_message(self, msg):
@@ -39,5 +39,11 @@ ip_address = "127.0.0.1"
 port = 8011
 text = "text_"
 
-print(client.get_message())
-client.push_message('msg')
+# print(client.get_message())
+# client.push_message('msg')
+tmp_count = 0
+for i in range(100):
+    client.push_message(f"number_{tmp_count}")
+    tmp_count += 1
+    # print(client.get_message())
+
