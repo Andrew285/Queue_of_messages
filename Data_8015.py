@@ -3,39 +3,46 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
-id_counter = 2
 
 @app.route("/read_message", methods=["GET"])
 def read_message():
-    global id_counter
+    # get address_id from the data_node
     cursor.execute(
-        # "SELECT message FROM messages WHERE message_id = %s AND fk_d_address = %s", (id_counter, 1)
-        "SELECT message FROM messages WHERE fk_d_address = %s LIMIT 1", (3, )
+        "SELECT d_address_id FROM data_nodes WHERE d_address_ip = %s", (request.host,)
+    )
+    d_id = cursor.fetchone()[0]
+
+    # get message_id from the message to delete of data_node
+    cursor.execute(
+        "SELECT message_id FROM messages WHERE fk_d_address = %s LIMIT 1", (d_id,)
+    )
+    m_id = cursor.fetchone()[0]
+
+    # get text from message to delete to output on console
+    cursor.execute(
+        "SELECT message FROM messages WHERE fk_d_address = %s LIMIT 1", (d_id,)
     )
     text = cursor.fetchone()[0]
+
+    # delete the message from the queue (data_node)
     cursor.execute(
-        "DELETE FROM messages WHERE message = %s AND fk_d_address = %s", (text, 3)
+        "DELETE FROM messages WHERE message_id = %s", (m_id,)
     )
-    id_counter += 1
     return text
+
 
 @app.route("/write_message", methods=["POST"])
 def write_message():
     msg = str(request.data)
-    text, id = msg.split('|')
-    id = id[:-1]
-    id = int(id)
-    # print(f"id: {id}")
-    # check if element is already in database
-    # cursor.execute("SELECT d_address_id FROM data_nodes WHERE d_address_ip = %s AND fk_m_address = %s",('127.0.0.1:8012', id))
-    # fk_id = cursor.fetchone()[0]
-    # print(fk_id)
-    # if fk_id is None:
+    text, id_ = msg.split('|')
+    id_ = id[:-1]
+    id_ = int(id_)  # get id for specific message in database
+
+    # insert new message in database
     cursor.execute(
-        "INSERT INTO messages (message, fk_d_address) VALUES (%s, %s)", (text, 3)
+        "INSERT INTO messages (message, fk_d_address) VALUES (%s, %s)", (text, id_)
     )
     return text
 
 
-app.run(host='127.0.0.1', debug=True, port=8014)
-
+app.run(host='127.0.0.1', debug=True, port=7011)
