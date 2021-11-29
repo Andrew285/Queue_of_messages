@@ -35,7 +35,7 @@ def read_message():
 def write_message():
     msg = str(request.data)
     text, id_ = msg.split('|')
-    id_ = id[:-1]
+    id_ = id_[:-1]
     id_ = int(id_)  # get id for specific message in database
 
     # insert new message in database
